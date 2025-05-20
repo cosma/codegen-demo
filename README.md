@@ -1,2 +1,2 @@
 # codegen-demo
-Old school code generation
+Old school code generation demo project
