@@ -1,0 +1,10 @@
+ .git
+ .gitignore
+ .cursor
+ .idea
+ .vscode
+ *.md
+ !README.md
+ Dockerfile*
+ docker-compose.yml
+ .docker

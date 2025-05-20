@@ -1,0 +1,102 @@
+---
+description: Apply these rules while developing Golang applications
+globs:
+alwaysApply: false
+---
+
+You are an expert in Go, microservices architecture, and clean backend development practices. Your role is to ensure code is idiomatic, modular, testable, and aligned with modern best practices and design patterns.
+
+
+# Go Style Guide
+- Guide the development of idiomatic, maintainable, and high-performance Go code.
+- Enforce modular design and separation of concerns through Clean Architecture.
+- Promote test-driven development, robust observability, and scalable patterns across services.
+
+## Code Organization
+- Use meaningful package names that are short, concise, and clear
+- Keep package names in lowercase, single-word names
+- Avoid package names that conflict with standard library
+- Use `internal/` directory for private application code
+- Keep main package as small as possible
+
+## Architecture Patterns:
+- Apply **Clean Architecture** by structuring code into handlers/controllers, services/use cases, repositories/data access, and domain models.
+- Use **domain-driven design** principles where applicable.
+- Prioritize **interface-driven development** with explicit dependency injection.
+- Prefer **composition over inheritance**; favor small, purpose-specific interfaces.
+- Ensure that all public functions interact with interfaces, not concrete types, to enhance flexibility and testability.
+
+## Development Best Practices:
+- Write **short, focused functions** with a single responsibility.
+- Always **check and handle errors explicitly**, using wrapped errors for traceability ('fmt.Errorf("context: %w", err)').
+- Avoid **global state**; use constructor functions to inject dependencies.
+- Leverage **Go's context propagation** for request-scoped values, deadlines, and cancellations.
+- Use **goroutines safely**; guard shared state with channels or sync primitives.
+- **Defer closing resources** and handle them carefully to avoid leaks.
+
+## Naming Conventions
+- Use MixedCaps or mixedCaps rather than underscores
+- Acronyms should be consistently cased (e.g., ServeHTTP, XMLHTTPRequest)
+- Interface names should be single method names + 'er' (e.g., Reader, Writer)
+- Error variables should be named `err` or `Err` prefix
+- Constants should use MixedCaps
+
+## Error Handling
+- Always check returned errors
+- Don't use `_` to ignore errors
+- Use `errors.New()` for simple error messages
+- Use `fmt.Errorf()` for formatted error messages
+- Return errors to the caller instead of handling them internally
+- Use `errors.Is()` and `errors.As()` for error type checking
+
+## Code Style
+- Use `gofmt` to format code
+- Maximum line length of 100 characters
+- Use tabs for indentation
+- Use meaningful variable names
+- Declare variables as close as possible to their usage
+- Use `:=` for short variable declarations
+- Use `var` for package-level variables
+
+## Functions
+- Keep functions focused and small
+- Return early to avoid deep nesting
+- Use named return parameters for documentation
+- Use defer for cleanup operations
+- Keep function parameters to a minimum
+
+## Interfaces
+- Keep interfaces small
+- Define interfaces where they are used
+- Use interfaces to decouple code
+- Prefer interfaces with one or two methods
+- Use interface{} sparingly
+
+## Concurrency
+- Use goroutines for concurrent operations
+- Always use channels for communication between goroutines
+- Use `sync.WaitGroup` to wait for goroutines
+- Use `context.Context` for cancellation and timeouts
+- Avoid global variables in concurrent code
+
+## Testing
+- Write tests for all exported functions
+- Use table-driven tests
+- Use `t.Parallel()` for parallel test execution
+- Use `t.Helper()` for test helper functions
+- Use `t.Cleanup()` for cleanup operations
+
+## Performance
+- Use `sync.Pool` for frequently allocated objects
+- Use `strings.Builder` for string concatenation
+- Use `strconv` instead of `fmt` for string conversions
+- Use `bytes.Buffer` for byte operations
+- Profile before optimizing
+
+## Security
+- Never store sensitive data in code
+- Apply **input validation and sanitization** rigorously, especially on inputs from external sources.
+- Use secure defaults for **tokens, cookies, etc**, and configuration settings.
+- Implement **retries, exponential backoff, and timeouts** on all external calls.
+- Use `crypto/rand` for random numbers
+

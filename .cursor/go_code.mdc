@@ -1,0 +1,126 @@
+
+---
+description: Apply these rules while developing Golang applications
+globs:
+alwaysApply: false
+---
+
+# Libraries And Tools
+- Use gin-gonic for HTTP framework, and generate html endpoints by openapi specification. Keep openapi.yaml file in the root
+- Use zerolog for logging
+- Use Postgresql when a database is required
+- Use official drivers and libraries
+
+# Go Package Structure
+- Package name should match directory name
+- Imports should be grouped: stdlib, external, internal
+- Use context for cancellation and timeouts
+- Use pointer receivers for methods that modify the receiver
+- Follow standard Go project layout:
+  - `cmd/`: Main applications
+    - `server/`: HTTP server entry point
+      - `main.go`: HTTP server initialization
+      - `server.go`: ServerInterface implementation
+    - `consumer/`: Kafka consumer entry point
+      - `main.go`: Consumer initialization
+  - `internal/`: Private application code
+  - `pkg/`: Public library code
+  - `api/`: Generated OpenAPI code
+    - `openapi.gen.go`: Generated server interface
+  - `configs/`: Configuration files
+  - `scripts/`: Build and deployment scripts
+  - `openapi.yaml`: API specification (in service root)
+  - `sonar-project.properties`: SonarQube configuration
+
+# Service Organization
+- Service Types:
+  - HTTP Server:
+    - Use `cmd/server/main.go` as entry point
+    - Implement `ServerInterface` from `api/openapi.gen.go` in `cmd/server/server.go`
+    - Deploy to HTTP server Kubernetes cluster
+    - Use Gin for HTTP routing and middleware
+    - Implement proper error handling and logging
+    - Use structured logging with zerolog
+    - Include request/response logging
+    - Add health check endpoints
+  - Kafka Consumer:
+    - Use `cmd/consumer/main.go` as entry point
+    - Deploy to consumer Kubernetes cluster
+    - Implement proper error handling and logging
+    - Use structured logging with zerolog
+    - Include message processing logging
+    - Add graceful shutdown handling
+  - Combined Service:
+    - Can have both HTTP and consumer capabilities
+    - Separate deployment configurations for each mode
+    - Share common code and configurations
+    - Use environment variables to control service mode
+    - Implement proper error handling and logging for both modes
+    - Use structured logging with zerolog for both modes
+    - Include request/response and message processing logging
+    - Add health check endpoints and graceful shutdown handling
+
+# OpenAPI/Swagger
+- Use OpenAPI 3.0 specification
+- Include detailed request/response schemas
+- Document all possible error responses
+- Use consistent naming conventions for endpoints
+- Group endpoints by resource/domain
+- Include authentication requirements
+- Document rate limits and quotas
+- Use proper HTTP status codes
+- Include examples for requests/responses
+- File Organization:
+  - Place `openapi.yaml` in service root directory
+  - Generate code using `openapi-generator`
+  - Place generated code in `api/openapi.gen.go`
+  - Implement generated interfaces in `cmd/server/server.go`
+
+# Database
+- Use PostgreSQL with sqlc
+- Automatically run generate when there is a change on sqlc files
+- Use migrations for schema changes
+- Use transactions for multiple operations
+- Implement proper connection pooling
+- Handle database errors appropriately
+- Implement connection retry logic
+- Use connection pooling
+- Implement proper error handling
+- Document database schema
+
+# Logging Best Practices
+  - Use zerolog for logging 
+  - Use structured logging with field methods (`.Str()`, `.Err()`, etc.)
+  - Use Gin middleware with `zlog.GinLogger()`
+  - Set log level through `LOG_LEVEL` environment variable
+  - Use proper log levels (debug, info, warn, error, fatal)
+  - Include context in log messages (request ID, correlation ID, etc.)
+  - Use `.Err(err)` for error logging
+  - Chain log fields before calling `.Msg()`
+
+# Code Quality
+  - Generate coverage reports
+  - Exclude generated code from coverage
+  - Exclude test data from analysis
+  - Exclude vendor directory
+  - Exclude configuration files
+  - Include all test files
+  - Exclude mock files from coverage
+
+# Configuration
+- Implement configuration validation
+- Use struct tags for configuration mapping
+- Follow configuration structure:
+  - `config.go`: Main config struct
+- Use environment variables for every configurations and map them to config.go file
+- Use viper for config management
+- Keep configs in yaml files
+- Keep secrets in json files
+- Document all config options
+- Use proper default values
+- Store application configs in `configs/<env>/config.yaml`
+- Store secrets in `configs/<env>/secrets.json`
+- Include validation schemas for configs
+- Document all config parameters
+- Use environment-specific values
+- Never commit secrets to version control
